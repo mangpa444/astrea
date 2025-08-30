@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Menu</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"> <!-- ICO logo -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top bar */
+    .top-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+    }
+    .top-bar img.logo {
+      height: 40px;
+    }
+    .social-icons a {
+      margin-left: 15px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 20px;
+    }
+
+    /* Menu container */
+    #menu-container {
+      position: relative;
+      max-width: 800px;
+      width: 100%;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #menu-image {
+      width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    /* Navigation */
+    .controls {
+      margin-top: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #555;
+    }
+
+    /* Loader */
+    #loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #333;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <img src="logo.png" alt="Logo" class="logo">
+    <div class="social-icons">
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://wa.me/123456789" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <div id="menu-container">
+    <img id="menu-image" src="menu/1.jpg" alt="Menu Page">
+  </div>
+
+  <div class="controls">
+    <button onclick="prevPage()">Previous</button>
+    <button onclick="nextPage()">Next</button>
+    <button onclick="firstPage()">First Page</button>
+  </div>
+
+  <script>
+    const totalPages = 4; // set total number of menu images
+    let currentPage = 1;
+
+    const menuImage = document.getElementById("menu-image");
+    const loader = document.getElementById("loader");
+
+    // Loader effect
+    window.addEventListener("load", () => {
+      loader.style.display = "none";
+      menuImage.style.opacity = 1;
+    });
+
+    function showPage(page) {
+      menuImage.style.opacity = 0;
+      setTimeout(() => {
+        menuImage.src = `menu/${page}.jpg`;
+        currentPage = page;
+        menuImage.onload = () => {
+          menuImage.style.opacity = 1;
+        };
+      }, 300);
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+      }
+    }
+    function prevPage() {
+      if (currentPage > 1) {
+        showPage(currentPage - 1);
+      }
+    }
+    function firstPage() {
+      showPage(1);
+    }
+  </script>
+</body>
+</html>
