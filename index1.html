@@ -1,152 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Astrea Menu</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Viewer</title>
+  <link rel="icon" href="logo.png" type="image/png">
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background:#111;
-      color:#fff;
-      overflow:hidden;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
     }
+    /* Header */
     header {
-      position: fixed;
-      top:0; left:0; width:100%;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px 20px;
-      background:rgba(0,0,0,0.5);
-      z-index:1000;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 10;
     }
     header img.logo {
-      height:40px;
+      height: 40px;
     }
-    .social-icons {
-      display:flex; gap:15px;
+    .social-icons a {
+      margin-left: 15px;
+      display: inline-block;
     }
-    .social-icons a img {
-      width:24px; height:24px;
-      filter: invert(1);
-      transition: transform 0.2s;
+    .social-icons img {
+      height: 24px;
+      width: 24px;
     }
-    .social-icons a:hover img { transform:scale(1.2); }
-
+    /* Viewer */
     #viewer {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+    }
+    #viewer img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    #viewer img.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    /* Navigation Buttons */
+    .nav-btn {
       position: absolute;
-      top:60px; left:0; right:0; bottom:0;
-      display:flex; align-items:center; justify-content:center;
-      overflow:hidden;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.7);
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 18px;
+      user-select: none;
     }
-    .page {
-      position:absolute;
-      max-width:100%; max-height:100%;
-      object-fit:contain;
-      transition: transform 0.5s ease, opacity 0.5s ease;
-      opacity:0; transform:translateX(100%);
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.9);
     }
-    .page.active {
-      opacity:1; transform:translateX(0);
-      z-index:10;
-    }
-    .page.left { transform:translateX(-100%); }
-
-    .controls {
-      position: fixed; bottom:20px; left:50%; transform:translateX(-50%);
-      display:flex; gap:15px;
-      z-index:1000;
-    }
-    .controls button {
-      padding:10px 15px;
-      border:none; border-radius:8px;
-      background:#fff; color:#111;
-      cursor:pointer; font-weight:bold;
-      transition:background 0.3s;
-    }
-    .controls button:hover { background:#ddd; }
-
-    /* Loader */
-    #loader {
-      position:fixed; top:0; left:0; right:0; bottom:0;
-      background:#111;
-      display:flex; align-items:center; justify-content:center;
-      z-index:2000;
-    }
-    .spinner {
-      border:6px solid #333;
-      border-top:6px solid #fff;
-      border-radius:50%;
-      width:50px; height:50px;
-      animation:spin 1s linear infinite;
+    #prevBtn { left: 20px; }
+    #nextBtn { right: 20px; }
+    /* Loading Spinner */
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #555;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      z-index: 5;
     }
     @keyframes spin {
-      0% { transform:rotate(0deg); }
-      100% { transform:rotate(360deg); }
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div id="loader"><div class="spinner"></div></div>
-
+  <!-- Header with logo and social media -->
   <header>
-    <img src="logo.png" alt="Logo" class="logo" />
+    <img src="logo.png" alt="Logo" class="logo">
     <div class="social-icons">
-      <a href="https://facebook.com" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"></a>
-      <a href="https://instagram.com" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"></a>
-      <a href="https://wa.me/1234567890" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp"></a>
+      <a href="https://facebook.com" target="_blank"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg" alt="Facebook"></a>
+      <a href="https://instagram.com" target="_blank"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg" alt="Instagram"></a>
+      <a href="https://wa.me/1234567890" target="_blank"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/whatsapp.svg" alt="WhatsApp"></a>
     </div>
   </header>
 
-  <div id="viewer"></div>
-
-  <div class="controls">
-    <button onclick="prevPage()">⟨ Prev</button>
-    <button onclick="firstPage()">⟪ First</button>
-    <button onclick="nextPage()">Next ⟩</button>
+  <!-- Viewer -->
+  <div id="viewer">
+    <div id="loading"></div>
+    <img id="pageImage" src="" alt="Menu Page">
+    <button id="prevBtn" class="nav-btn">&#10094;</button>
+    <button id="nextBtn" class="nav-btn">&#10095;</button>
   </div>
 
   <script>
-    const totalPages = 4; // update if more/less
+    const totalPages = 4; // Update if you add more
     let currentPage = 1;
+    const pageImage = document.getElementById("pageImage");
+    const loading = document.getElementById("loading");
 
-    const viewer = document.getElementById('viewer');
-    for (let i=1; i<=totalPages; i++) {
-      const img = document.createElement('img');
-      img.src = `menu/${i}.PNG`;
-      img.className = 'page';
-      if (i===1) img.classList.add('active');
-      viewer.appendChild(img);
+    function showPage(page) {
+      loading.style.display = "block";
+      pageImage.classList.remove("active");
+      const img = new Image();
+      img.src = `menu/${page}.PNG`;
+      img.onload = () => {
+        pageImage.src = img.src;
+        pageImage.classList.add("active");
+        loading.style.display = "none";
+      };
     }
 
-    const pages = document.querySelectorAll('.page');
-    window.addEventListener('load', ()=> {
-      document.getElementById('loader').style.display='none';
-    });
-
-    function showPage(n, direction=1) {
-      if (n<1 || n>totalPages) return;
-      pages[currentPage-1].classList.remove('active');
-      pages[currentPage-1].classList.add(direction>0?'left':'');
-      setTimeout(()=>{ pages[currentPage-1].classList.remove('left'); },500);
-
-      currentPage=n;
-      pages[currentPage-1].classList.add('active');
+    function nextPage() {
+      currentPage = (currentPage % totalPages) + 1;
+      showPage(currentPage);
     }
-    function nextPage(){ if(currentPage<totalPages) showPage(currentPage+1,1); }
-    function prevPage(){ if(currentPage>1) showPage(currentPage-1,-1); }
-    function firstPage(){ showPage(1, -1); }
 
-    // Swipe support
-    let startX=0;
-    viewer.addEventListener('touchstart', e=>{ startX=e.touches[0].clientX; });
-    viewer.addEventListener('touchend', e=>{
-      let dx = e.changedTouches[0].clientX - startX;
-      if (dx>50) prevPage();
-      if (dx<-50) nextPage();
+    function prevPage() {
+      currentPage = (currentPage - 2 + totalPages) % totalPages + 1;
+      showPage(currentPage);
+    }
+
+    document.getElementById("nextBtn").addEventListener("click", nextPage);
+    document.getElementById("prevBtn").addEventListener("click", prevPage);
+
+    // Touch/swipe handling
+    let startX = 0;
+    document.getElementById("viewer").addEventListener("touchstart", e => {
+      startX = e.touches[0].clientX;
     });
+    document.getElementById("viewer").addEventListener("touchend", e => {
+      const endX = e.changedTouches[0].clientX;
+      if (startX - endX > 50) nextPage();
+      else if (endX - startX > 50) prevPage();
+    });
+
+    // Load first page
+    showPage(currentPage);
   </script>
 </body>
 </html>
